@@ -1,60 +1,53 @@
-class Solution
-{
-    public long solve(List<List<int>> A)
-    {
-        List<List<long>> res = new List<List<long>>();
-        long result = Int32.MinValue;
+class Solution {
+    public int solve(List<List<int>> A) {
+        int sum = Int32.MinValue;
 
-        for (int i = 0; i < A.Count; i++)
+        for(int i = 0; i < A.Count; i++)
         {
-            List<long> temp = new List<long>();
-            for (int j = 0; j < A[0].Count; j++)
+            for(int j = 1; j < A[0].Count; j++)
             {
-                temp.Add((long)A[i][j]);
-            }
-
-            res.Add(temp);
-        }
-
-        for (int i = 0; i < A.Count; i++)
-        {
-            for (int j = 1; j < A[0].Count; j++)
-            {
-                res[i][j] += res[i][j - 1];
+                A[i][j] += A[i][j-1];
             }
         }
 
-        for (int i = 0; i < A[0].Count; i++)
+        for(int i = 0; i < A[0].Count; i++)
         {
-            for (int j = 1; j < A.Count; j++)
+            for(int j = i; j < A[0].Count; j++)
             {
-                res[j][i] += res[j - 1][i];
-            }
-        }
+                List<int> temp = new List<int>();
 
-        for (int i = 0; i < A.Count; i++)
-        {
-            for (int j = 0; j < A[0].Count; j++)
-            {
-                long temp = res[A.Count - 1][A[0].Count - 1];
+                for(int k = 0; k < A.Count; k++)
+                {
+                    if (i == 0)
+                    {
+                        temp.Add(A[k][j]);
+                    }
+                    else
+                    {
+                        temp.Add(A[k][j] - A[k][i-1]);
+                    }
+                } 
 
-                if (j > 0)
+                int tempSum = Int32.MinValue;
+                int sumSoFar = 0;
+                int maxElement = temp[0];
+
+                for(int l = 0; l < temp.Count; l++)
                 {
-                    temp -= res[A.Count - 1][j - 1];
-                }
-                if (i > 0)
+                    sumSoFar = Math.Max(sumSoFar + temp[l], 0);
+                    tempSum = Math.Max(tempSum, sumSoFar);
+                    maxElement = Math.Max(maxElement, temp[l]);
+                }  
+
+                if (tempSum == 0)
                 {
-                    temp -= res[i - 1][A[0].Count - 1];
-                }
-                if (i > 0 && j > 0)
-                {
-                    temp += res[i - 1][j - 1];
+                    tempSum = maxElement;
                 }
 
-                result = Math.Max(result, temp);
+                sum = Math.Max(sum, tempSum);
             }
         }
 
-        return result;
+        return sum;
     }
 }
